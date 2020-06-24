@@ -1,3 +1,4 @@
+
 import pandas as pd
     
     
@@ -19,7 +20,7 @@ stck_comments = df['Stock comments'].tolist()
 def bloom_lib():
 
     
-##########
+#########
     stknum_geno_lib = {}
     
     for n in range(0, 76419):
@@ -29,7 +30,7 @@ def bloom_lib():
     
     ##chromosome 
     
-##########    
+#########   
     
     stck_num_chrmsm = {}
        
