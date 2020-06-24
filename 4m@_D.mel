@@ -1,0 +1,176 @@
+import pandas as pd
+    
+    
+data = pd.read_excel (r'//Users/jamshidasadzadeh/Desktop/Python/bloomington_stocks/bloomington.xlsm') 
+
+df = pd.DataFrame(data, columns= ['stk_num','Genotype', 'ch_num_all', 'Stock comments'])
+
+
+stck_numlist = (df['stk_num'].tolist())
+
+genolist = df['Genotype'].tolist()
+
+chr_num = df['ch_num_all'].tolist()
+
+stck_comments = df['Stock comments'].tolist()
+
+
+
+def bloom_lib():
+
+    
+##########
+    stknum_geno_lib = {}
+    
+    for n in range(0, 76419):
+        stknum_geno_lib[stck_numlist[n]] = genolist[n]
+    
+    #return stknum_geno_lib[68]
+    
+    ##chromosome 
+    
+##########    
+    
+    stck_num_chrmsm = {}
+       
+    for m in range(0, 76419):
+        stck_num_chrmsm[stck_numlist[m]] = chr_num[m]
+    
+    stck_num_comments = {}
+    
+    for b in range(0, 76419):
+        stck_num_comments[stck_numlist[b]] = stck_comments[b]
+    
+    
+    stock_number = int(input('Please enter Bloomington stock number:'))
+    
+
+    sorted_raw = str(stknum_geno_lib[stock_number])
+    
+    sorted_raw_lst = list(sorted_raw)
+    
+    for p, q in enumerate(sorted_raw_lst):
+        
+        if q == ';' and sorted_raw_lst[p+2] ==')':
+            sorted_raw_lst[p] = ':'
+        elif q == ';' and sorted_raw_lst[p-2] =='(':
+            sorted_raw_lst[p] = ':'
+ 
+   
+    sorted_raw2 = ''.join(sorted_raw_lst)
+    
+    sp_sorted_raw = sorted_raw2.split(';')
+   
+    print('\nBloomington genotype:\n\n' + '             ', sorted_raw)
+    
+    #exceptions = []
+
+    #if len(sp_sorted_raw) != len(stck_num_chrmsm[stock_number]):
+
+    frst = ''
+    scnd = ''
+    thrd = ''
+    frth = ''
+    
+    if 'wt' in str(stck_num_chrmsm[stock_number]):
+    
+        frst == ''
+        
+        scnd == ''
+       
+        thrd == ''
+       
+        frth == ''
+        
+        print('\n\n***This is a wild-type Drosophila line***')   
+    
+    if '4' in str(stck_num_chrmsm[stock_number]) and '3' in str(stck_num_chrmsm[stock_number]) and '2' in str(stck_num_chrmsm[stock_number]) and '1' in str(stck_num_chrmsm[stock_number]):
+    
+        frst += sp_sorted_raw[0]
+        scnd += sp_sorted_raw[1]
+        thrd += sp_sorted_raw[2]
+        frth += sp_sorted_raw[3]
+    
+
+    elif '4' in str(stck_num_chrmsm[stock_number]) and '3' in str(stck_num_chrmsm[stock_number]) and '2' in str(stck_num_chrmsm[stock_number]) and scnd == '' and thrd == '' and frth == '':
+        scnd += sp_sorted_raw[0]
+        thrd += sp_sorted_raw[1]
+        frth += sp_sorted_raw[2]
+
+    elif '4' in str(stck_num_chrmsm[stock_number]) and '3' in str(stck_num_chrmsm[stock_number]) and '1' in str(stck_num_chrmsm[stock_number]) and frst == '' and thrd == '' and frth == '':
+        frst += sp_sorted_raw[0]
+        thrd += sp_sorted_raw[1]
+        frth += sp_sorted_raw[2] 
+    
+    elif '4' in str(stck_num_chrmsm[stock_number]) and '3' in str(stck_num_chrmsm[stock_number]) and thrd == '' and frth == '':
+        thrd += sp_sorted_raw[0]
+        frth += sp_sorted_raw[1]
+
+    elif '4' in str(stck_num_chrmsm[stock_number]) and '2' in str(stck_num_chrmsm[stock_number]) and '1' in str(stck_num_chrmsm[stock_number]) and frth == '' and scnd == '' and frst == '':
+        frst += sp_sorted_raw[0]
+        scnd += sp_sorted_raw[1]
+        frth += sp_sorted_raw[2]
+    
+    
+    elif '4' in str(stck_num_chrmsm[stock_number]) and '2' in str(stck_num_chrmsm[stock_number]) and frth == '' and scnd == '':
+        scnd += sp_sorted_raw[0]
+        frth += sp_sorted_raw[1]
+
+    elif '4' in str(stck_num_chrmsm[stock_number]) and '1' in str(stck_num_chrmsm[stock_number]) and frth == '' and frst == '':
+        frst += sp_sorted_raw[0]
+        frth += sp_sorted_raw[1]
+
+    elif '4' in str(stck_num_chrmsm[stock_number]) and frth == '':
+        frth += sp_sorted_raw[0]  
+
+
+    if '3' in str(stck_num_chrmsm[stock_number]) and '2' in str(stck_num_chrmsm[stock_number]) and '1' in str(stck_num_chrmsm[stock_number]) and frst == '' and scnd == '' and thrd == '':
+        frst += sp_sorted_raw[0] 
+        scnd += sp_sorted_raw[1]
+        thrd += sp_sorted_raw[2]
+
+
+    elif '3' in str(stck_num_chrmsm[stock_number]) and '2' in str(stck_num_chrmsm[stock_number]) and thrd == '' and scnd == '':
+        scnd += sp_sorted_raw[0]
+        thrd += sp_sorted_raw[1]
+
+    elif '3' in str(stck_num_chrmsm[stock_number]) and '1' in str(stck_num_chrmsm[stock_number]) and thrd == '' and frst == '':
+        frst += sp_sorted_raw[0]
+        thrd += sp_sorted_raw[1]
+
+    elif '3' in str(stck_num_chrmsm[stock_number]) and thrd == '':
+        thrd += sp_sorted_raw[0]
+
+
+    if '2' in str(stck_num_chrmsm[stock_number]) and '1' in str(stck_num_chrmsm[stock_number]) and scnd == '' and frst == '':
+        frst += sp_sorted_raw[0] 
+        scnd += sp_sorted_raw[1]
+
+    elif '2' in str(stck_num_chrmsm[stock_number]) and scnd == '':
+        scnd += sp_sorted_raw[0]
+
+    if '1' in str(stck_num_chrmsm[stock_number]) and frst == '':
+        frst += sp_sorted_raw[0]
+
+    if frst == '':
+        frst = ' '
+    if scnd == '':
+        scnd = ' '
+    if thrd == '':
+        thrd = ' '
+    if frth == '':
+        frth = ' '
+    
+    genotype = frst, scnd, thrd, frth
+    
+    print('\n\n\n\n\n\nReformatted genotype: \n\n\n             {} ; {} ; {} ; {}'.format(genotype[0], genotype[1], genotype[2], genotype[3]))
+    print('\n\n1st Chr: {}\n'.format(frst))
+    print('\n2nd Chr: {}\n'.format(scnd))
+    print('\n3rd Chr: {}\n'.format(thrd))
+    print('\n4th Chr: {}\n'.format(frth))
+    print("\n\nComments: *** "+ str(stck_num_comments[stock_number]), '***')
+
+          
+    
+############
+bloom_lib()  
