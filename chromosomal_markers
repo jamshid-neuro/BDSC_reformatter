@@ -1,0 +1,4 @@
+    chr1_markers = ['/FM1', '/FM2', '/FM3', '/FM4', '/FM5', '/FM6', '/FM7', '/Y', 'Df(1)', 'w[1118]', 'Df(1)', 'w[*]']
+    chr2_markers = ['/SM1', '/SM2', '/SM5', '/SM6', 'attp40', '/CyO', '2R', '2L', '2LR', 'Df(2', 'In(2']
+    chr3_markers = ['/TM2', '/TM3','/TM6','/TM8', '/TM9', 'attp40', '3R', '3L', '3LR', 'Df(3', 'In(3']
+    chr4_markers = []
