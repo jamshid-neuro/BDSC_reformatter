@@ -42,7 +42,7 @@ def bloom_lib():
     stck_code = []
     ref_genotype = []
     comments = []
- ######################   
+    
     for b in range(0, 76419):
         stck_num_comments[stck_numlist[b]] = stck_comments[b]
         comments.append(stck_comments[b])
@@ -84,13 +84,15 @@ def bloom_lib():
 
             if 'wt' in str(stck_num_chrmsm[stock_number]):
 
-                frst == ''
+                
+                
+                frst += str(stknum_geno_lib[x]) + ':' + '    +/+' 
 
-                scnd == ''
+                scnd = ''
 
-                thrd == ''
+                thrd = ''
 
-                frth == ''
+                frth += '+/+' + '   "Wild-type line"'
 
 
         
@@ -181,34 +183,38 @@ def bloom_lib():
             #print('\n4th Chr: {}\n'.format(frth))
             #print("\n\nComments: *** "+ str(stck_num_comments[stock_number]), '***')
 
-            reformatted_genotypes[x] = frst+' ; '+scnd+' ; '+thrd+' ; '+frth
+            reformatted_genotypes[x] = frst+'  ;  '+scnd+'  ;  '+thrd+'  ;  '+frth
            
+            stck_code.append(str(x))
+            ref_genotype.append(reformatted_genotypes[x])
+            
             sorted_raw = ''
             sorted_raw_lst = []
             sorted_raw2 = ''
             sp_sorted_raw = []
             
-            stck_code.append(str(x))
-            ref_genotype.append(reformatted_genotypes[x])
+           
             
 
         except:
                 
-            reformatted_genotypes[x] = 'Wrong original format'
+            reformatted_genotypes[x] = 'NOT ReFORMATTED!!! Original format @ BDSC:  ' + sorted_raw
+            
+            stck_code.append(str(x))
+            ref_genotype.append(reformatted_genotypes[x])
             
             sorted_raw = ''
             sorted_raw_lst = []
             sorted_raw2 = ''
             sp_sorted_raw = []
             
-            stck_code.append(str(x))
-            ref_genotype.append(reformatted_genotypes[x])
+            
             
 
     
-    all_data['Stock Number'] = stck_code
-    all_data['Reformatted Genotype'] = ref_genotype
-    all_data['Comments'] = comments
+    all_data['Stock Number'] = stck_code[:-1]
+    all_data['Reformatted Genotype'] = ref_genotype[:-1]
+    all_data['Comments'] = comments[:-1]
         
     
     
