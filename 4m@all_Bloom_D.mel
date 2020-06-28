@@ -1,18 +1,20 @@
 import pandas as pd
     
     
-data = pd.read_excel (r'//Users/jamshidasadzadeh/Desktop/Python/bloomington_stocks/bloomington.xlsm') 
+data = pd.read_excel (r'//Users/jamshidasadzadeh/Desktop/Python/bloomington_stocks/bloomington_stock_list.xlsm') 
 
-df = pd.DataFrame(data, columns= ['stk_num','Genotype', 'ch_num_all', 'Stock comments'])
+stocklist = pd.DataFrame(data, columns= ['stk_num','Genotype', 'ch_num_all', 'Stock comments'])
 
 
-stck_numlist = (df['stk_num'].tolist())
+stck_numlist = stocklist['stk_num'].tolist()
 
-genolist = df['Genotype'].tolist()
+genolist = stocklist['Genotype'].tolist()
 
-chr_num = df['ch_num_all'].tolist()
+chr_num = stocklist['ch_num_all'].tolist()
 
-stck_comments = df['Stock comments'].tolist()
+stck_comments = stocklist['Stock comments'].tolist()
+
+
 
 
 
