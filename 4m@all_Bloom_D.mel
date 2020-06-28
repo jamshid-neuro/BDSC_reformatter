@@ -14,13 +14,14 @@ chr_num = df['ch_num_all'].tolist()
 
 stck_comments = df['Stock comments'].tolist()
 
+
+
 def bloom_lib():
 
-    
 ##########
     stknum_geno_lib = {}
     
-    for n in range(0, 76419):
+    for n in range(0, len(stck_numlist)):
         stknum_geno_lib[stck_numlist[n]] = genolist[n]
     
     #return stknum_geno_lib[68]
@@ -31,7 +32,7 @@ def bloom_lib():
     
     stck_num_chrmsm = {}
        
-    for m in range(0, 76419):
+    for m in range(0, len(stck_numlist)):
         stck_num_chrmsm[stck_numlist[m]] = chr_num[m]
     
     stck_num_comments = {}
@@ -43,7 +44,7 @@ def bloom_lib():
     ref_genotype = []
     comments = []
     
-    for b in range(0, 76419):
+    for b in range(0, len(stck_numlist)):
         stck_num_comments[stck_numlist[b]] = stck_comments[b]
         comments.append(stck_comments[b])
         
