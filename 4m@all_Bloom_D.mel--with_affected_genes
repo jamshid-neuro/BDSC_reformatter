@@ -27,7 +27,6 @@ gene_symb_list = stockgenes['gene_symbol'].tolist()
 fbgn_list = stockgenes['fbgn'].tolist()
 
 
-
 def bloom_lib():
 
 ########## To make a library of {stock numbers : genotypes}
@@ -47,13 +46,21 @@ def bloom_lib():
     
     
     
-    ## Final doctionary called all_data with all the data to be exported as a final Excel sheet   
+    ## Final doctionary onto which all the data will be exported as a final Excel sheet:
     all_data = {}
     
-    ## Columns on the all_data sheet
+    ## Columns on the all_data sheet:
+    
+    #Stock Numbers:
     stck_code = []
+    
+    #Reformatted Genotypes:
     ref_genotype = []
+    
+    #Affected Genes
     affected_genes = []
+    
+    #Comments
     comments = []
     
 ########## To make a library of {stock numbers : comments}      
@@ -64,7 +71,7 @@ def bloom_lib():
         comments.append(stck_comments[b])
         
         
-########### To make a library of {stock numbers : afected genes}  
+########### To make a dictionary of {stock numbers : afected genes} from the xlxs of stockgenes.csv file from Bloomington:
 
     from collections import defaultdict
     
@@ -76,18 +83,22 @@ def bloom_lib():
     
     
         
-#######################
+######### Dictionary to match up stock numbers with the reformatted corresponding genotypes:
     reformatted_genotypes = {}
  
+ #########  This for loop goes through the xlxs of bloomington.csv file and reformats every genotype on the list and matches it up with its corresponding stock number, affected genes and stock comments
     
     for x in stck_numlist:
         
         stock_number = x
-
+        
+        # Unformatted genotype
         sorted_raw = str(stknum_geno_lib[stock_number])
-
+        
+        # Makes a list of all the characters in a raw genotype
         sorted_raw_lst = list(sorted_raw)
 
+        # Eliminates semicolons(;) that are used in the raw genotypes to mark translocations by converting them into colons(:), and only conserves chromosome separations
         for p, q in enumerate(sorted_raw_lst):
 
             if q == ';' and sorted_raw_lst[p+2] ==')':
@@ -95,36 +106,37 @@ def bloom_lib():
             elif q == ';' and sorted_raw_lst[p-2] =='(':
                 sorted_raw_lst[p] = ':'
 
-
+        # Remakes the new list back into a string
         sorted_raw2 = ''.join(sorted_raw_lst)
         
+        # Splits the string into chromosome phrases based on semicolons survived from the previous correction
         sp_sorted_raw = sorted_raw2.split(';')
-        #return type(sp_sorted_raw)
-        #print('\nBloomington genotype:\n\n' + '             ', sorted_raw)
-
-        #exceptions = []
-
-        #if len(sp_sorted_raw) != len(stck_num_chrmsm[stock_number]):
-        try: 
+        
+        # Error handling for a number of stocks that their genetic elements are not matching with the affected chromosomes numbers in the original bloomington.csv. 
+        # If an error is raised, except will add the original bdsc genotype to the exported excel sheet
+        try:
+            
+            # Soretd chromosomes:
             frst = ''
             scnd = ''
             thrd = ''
             frth = ''
 
+            # Wild-type lines:
             if 'wt' in str(stck_num_chrmsm[stock_number]):
 
                 
                 
                 frst += str(stknum_geno_lib[x]) + ':' + '     ' 
 
-                scnd = ''
+                scnd = ' '
 
-                thrd = ''
+                thrd = ' '
 
                 frth += ' ' + '   "Wild-type line"'
 
 
-        
+ ############## Chromosome sorting based on the information in the 'ch_num_all' column of the original bloomington.csv file:     
             
             if '4' in str(stck_num_chrmsm[stock_number]) and '3' in str(stck_num_chrmsm[stock_number]) and '2' in str(stck_num_chrmsm[stock_number]) and '1' in str(stck_num_chrmsm[stock_number]):
 
@@ -147,7 +159,7 @@ def bloom_lib():
             elif '4' in str(stck_num_chrmsm[stock_number]) and '3' in str(stck_num_chrmsm[stock_number]) and thrd == '' and frth == '':
                 thrd += sp_sorted_raw[0]
                 frth += sp_sorted_raw[1]
-        ######
+        
             elif '4' in str(stck_num_chrmsm[stock_number]) and '2' in str(stck_num_chrmsm[stock_number]) and '1' in str(stck_num_chrmsm[stock_number]) and frth == '' and scnd == '' and frst == '':
                 frst += sp_sorted_raw[0]
                 scnd += sp_sorted_raw[1]
@@ -193,7 +205,8 @@ def bloom_lib():
 
             if '1' in str(stck_num_chrmsm[stock_number]) and frst == '':
                 frst += sp_sorted_raw[0]
-
+            
+            # If a chromosome is empty, return an empty space (' ') between the two semicolons
             if frst == '':
                 frst = ' '
             if scnd == '':
@@ -243,6 +256,7 @@ def bloom_lib():
             
             
 
+    # Making the comuns in the all_data file:
     
     all_data['Stock Number'] = stck_code[:-1]
     all_data['Reformatted Genotype'] = ref_genotype[:-1]
@@ -251,4 +265,4 @@ def bloom_lib():
     
     
     export = pd.DataFrame(all_data, columns = ['Stock Number', 'Reformatted Genotype', 'Affected Genes', 'Comments'])
-    export.to_excel (r'//Users/jamshidasadzadeh/Desktop/Python/bloomington_stocks/export_dataframe.xlsx', index = False, header=True) 
+    export.to_excel (r'//Users/jamshidasadzadeh/Desktop/Python/bloomington_stocks/export_dataframe.xlsx', index = False, header=True)
