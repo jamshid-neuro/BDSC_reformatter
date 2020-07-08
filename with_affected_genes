@@ -251,4 +251,4 @@ def bloom_lib():
     
     
     export = pd.DataFrame(all_data, columns = ['Stock Number', 'Reformatted Genotype', 'Affected Genes', 'Comments'])
-    export.to_excel (r'//Users/jamshidasadzadeh/Desktop/Python/bloomington_stocks/export_dataframe.xlsx', index = False, header=True)
+    export.to_excel (r'//Users/jamshidasadzadeh/Desktop/Python/bloomington_stocks/export_dataframe.xlsx', index = False, header=True) 
