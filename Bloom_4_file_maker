@@ -1,0 +1,320 @@
+import pandas as pd
+    
+    
+data1 = pd.read_excel (r'//Users/jamshidasadzadeh/Desktop/Python/bloomington_stocks/bloomington_stock_list.xlsm') 
+
+stocklist = pd.DataFrame(data1, columns= ['stk_num','Genotype', 'ch_num_all', 'Stock comments'])
+
+stck_numlist = stocklist['stk_num'].tolist()
+
+genolist = stocklist['Genotype'].tolist()
+
+chr_num = stocklist['ch_num_all'].tolist()
+
+stck_comments = stocklist['Stock comments'].tolist()
+
+
+
+
+data2 = pd.read_excel (r'//Users/jamshidasadzadeh/Desktop/Python/bloomington_stocks/stockgenes.xlsx') 
+
+stockgenes = pd.DataFrame(data2, columns= ['stknum','gene_symbol', 'fbgn'])
+
+stck_numlist2 = stockgenes['stknum'].tolist()
+
+gene_symb_list = stockgenes['gene_symbol'].tolist()
+
+fbgn_list = stockgenes['fbgn'].tolist()
+
+
+
+def bloom_lib():
+
+########## To make a library of {stock numbers : genotypes}
+
+    stknum_geno_lib = {}
+    
+    for n in range(0, len(stck_numlist)):
+        stknum_geno_lib[stck_numlist[n]] = genolist[n]
+  
+    
+########## To make a library of {stock numbers : affected chromosomes}  
+    
+    stck_num_chrmsm = {}
+       
+    for m in range(0, len(stck_numlist)):
+        stck_num_chrmsm[stck_numlist[m]] = chr_num[m]
+    
+    
+    
+    ## Final doctionary onto which all the data will be exported as a final Excel sheet:
+    all_data = {}
+    
+    ## Columns on the all_data sheet:
+    
+    #Stock Numbers:
+    stck_code = []
+    
+    #Reformatted Genotypes:
+    ref_chr1 = []
+    ref_chr1bal = []
+    ref_chr2 = []
+    ref_chr2bal = []
+    ref_chr3 = []
+    ref_chr3bal = []
+    ref_chr4 = []
+    ref_chr4bal = []
+    prnt = []
+    
+    #Affected Genes
+    affected_genes = []
+    
+    #Comments
+    comments = []
+    
+########## To make a library of {stock numbers : comments}      
+    stck_num_comments = {}
+    
+    for b in range(0, len(stck_numlist)):
+        stck_num_comments[stck_numlist[b]] = stck_comments[b]
+        comments.append(stck_comments[b])
+        
+        
+########### To make a dictionary of {stock numbers : afected genes} from the xlxs of stockgenes.csv file from Bloomington:
+
+    from collections import defaultdict
+    
+    stcknum_genesymb_lib = defaultdict(list)
+    
+    for i,j in enumerate(stck_numlist2):
+  
+        stcknum_genesymb_lib[j].append(gene_symb_list[i])
+    
+    
+        
+######### Dictionary to match up stock numbers with the reformatted corresponding genotypes:
+    reformatted_genotypes = {}
+ 
+ #########  This for loop goes through the xlxs of bloomington.csv file and reformats every genotype on the list and matches it up with its corresponding stock number, affected genes and stock comments
+    
+    for x in stck_numlist:
+        
+        stock_number = x
+        
+        # Unformatted genotype
+        sorted_raw = str(stknum_geno_lib[stock_number])
+        
+        # Makes a list of all the characters in a raw genotype
+        sorted_raw_lst = list(sorted_raw)
+
+        # Eliminates semicolons(;) that are used in the raw genotypes to mark translocations by converting them into colons(:), and only conserves chromosome separations
+        for p, q in enumerate(sorted_raw_lst):
+
+            if q == ';' and sorted_raw_lst[p+2] ==')':
+                sorted_raw_lst[p] = ':'
+            elif q == ';' and sorted_raw_lst[p-2] =='(':
+                sorted_raw_lst[p] = ':'
+
+        # Remakes the new list back into a string
+        sorted_raw2 = ''.join(sorted_raw_lst)
+        
+        # Splits the string into chromosome phrases based on semicolons survived from the previous correction
+        sp_sorted_raw = sorted_raw2.split(';')
+        
+        # Error handling for a number of stocks that their genetic elements are not matching with the affected chromosomes numbers in the original bloomington.csv. 
+        # If an error is raised, except will add the original bdsc genotype to the exported excel sheet
+        
+        try:
+            
+            
+            # Soretd chromosomes:
+            frst = ''
+            scnd = ''
+            thrd = ''
+            frth = ''
+
+            # Wild-type lines:
+            if 'wt' in str(stck_num_chrmsm[stock_number]):
+                
+            
+                frst = ''
+                scnd = ''
+                thrd = ''
+                frth = ''
+
+            if '4' in str(stck_num_chrmsm[stock_number]) and '3' in str(stck_num_chrmsm[stock_number]) and '2' in str(stck_num_chrmsm[stock_number]) and '1' in str(stck_num_chrmsm[stock_number]):
+                
+
+                frst += sp_sorted_raw[0]
+                scnd += sp_sorted_raw[1]
+                thrd += sp_sorted_raw[2]
+                frth += sp_sorted_raw[3]
+
+
+            elif '4' in str(stck_num_chrmsm[stock_number]) and '3' in str(stck_num_chrmsm[stock_number]) and '2' in str(stck_num_chrmsm[stock_number]) and scnd == '' and thrd == '' and frth == '':
+                
+                scnd += sp_sorted_raw[0]
+                thrd += sp_sorted_raw[1]
+                frth += sp_sorted_raw[2]
+
+            elif '4' in str(stck_num_chrmsm[stock_number]) and '3' in str(stck_num_chrmsm[stock_number]) and '1' in str(stck_num_chrmsm[stock_number]) and frst == '' and thrd == '' and frth == '':
+                frst += sp_sorted_raw[0]
+                thrd += sp_sorted_raw[1]
+                frth += sp_sorted_raw[2] 
+
+            elif '4' in str(stck_num_chrmsm[stock_number]) and '3' in str(stck_num_chrmsm[stock_number]) and thrd == '' and frth == '':
+                thrd += sp_sorted_raw[0]
+                frth += sp_sorted_raw[1]
+        
+            elif '4' in str(stck_num_chrmsm[stock_number]) and '2' in str(stck_num_chrmsm[stock_number]) and '1' in str(stck_num_chrmsm[stock_number]) and frth == '' and scnd == '' and frst == '':
+                frst += sp_sorted_raw[0]
+                scnd += sp_sorted_raw[1]
+                frth += sp_sorted_raw[2]
+
+
+            elif '4' in str(stck_num_chrmsm[stock_number]) and '2' in str(stck_num_chrmsm[stock_number]) and frth == '' and scnd == '':
+                scnd += sp_sorted_raw[0]
+                frth += sp_sorted_raw[1]
+
+            elif '4' in str(stck_num_chrmsm[stock_number]) and '1' in str(stck_num_chrmsm[stock_number]) and frth == '' and frst == '':
+                frst += sp_sorted_raw[0]
+                frth += sp_sorted_raw[1]
+
+            elif '4' in str(stck_num_chrmsm[stock_number]) and frth == '':
+                frth += sp_sorted_raw[0]  
+
+
+            if '3' in str(stck_num_chrmsm[stock_number]) and '2' in str(stck_num_chrmsm[stock_number]) and '1' in str(stck_num_chrmsm[stock_number]) and frst == '' and scnd == '' and thrd == '':
+                frst += sp_sorted_raw[0] 
+                scnd += sp_sorted_raw[1]
+                thrd += sp_sorted_raw[2]
+
+
+            elif '3' in str(stck_num_chrmsm[stock_number]) and '2' in str(stck_num_chrmsm[stock_number]) and thrd == '' and scnd == '':
+                scnd += sp_sorted_raw[0]
+                thrd += sp_sorted_raw[1]
+
+            elif '3' in str(stck_num_chrmsm[stock_number]) and '1' in str(stck_num_chrmsm[stock_number]) and thrd == '' and frst == '':
+                frst += sp_sorted_raw[0]
+                thrd += sp_sorted_raw[1]
+
+            elif '3' in str(stck_num_chrmsm[stock_number]) and thrd == '':
+                thrd += sp_sorted_raw[0]
+
+
+            if '2' in str(stck_num_chrmsm[stock_number]) and '1' in str(stck_num_chrmsm[stock_number]) and scnd == '' and frst == '':
+                frst += sp_sorted_raw[0] 
+                scnd += sp_sorted_raw[1]
+
+            elif '2' in str(stck_num_chrmsm[stock_number]) and scnd == '':
+                scnd += sp_sorted_raw[0]
+
+            if '1' in str(stck_num_chrmsm[stock_number]) and frst == '':
+                frst += sp_sorted_raw[0]
+            
+            
+
+            # If a chromosome is empty, return an empty space (' ') between the two semicolons
+            if frst == '':
+                ref_chr1.append(' ')
+                ref_chr1bal.append(' ')
+            elif '/' in frst:
+                spl_frst = frst.split('/')
+                ref_chr1.append(spl_frst[0])
+                ref_chr1bal.append(spl_frst[1])
+            else:
+                ref_chr1.append(frst)
+                ref_chr1bal.append(' ')
+                
+                
+            if scnd == '':
+                ref_chr2.append(' ')
+                ref_chr2bal.append(' ')
+            elif '/' in scnd:
+                spl_scnd = scnd.split('/')
+                ref_chr2.append(spl_scnd[0])
+                ref_chr2bal.append(spl_scnd[1])
+            else:
+                ref_chr2.append(scnd)
+                ref_chr2bal.append(' ')
+                
+                
+            if thrd == '':
+                ref_chr3.append(' ')
+                ref_chr3bal.append(' ')
+            elif '/' in thrd:
+                spl_thrd = thrd.split('/')
+                ref_chr3.append(spl_thrd[0])
+                ref_chr3bal.append(spl_thrd[1])
+            else:
+                ref_chr3.append(thrd)
+                ref_chr3bal.append(' ')
+            
+            if frth == '':
+                ref_chr4.append(' ')
+                ref_chr4bal.append(' ')
+            elif '/' in frth:
+                spl_frth = frth.split('/')
+                ref_chr4.append(spl_frth[0])
+                ref_chr4bal.append(spl_frth[1])
+            else:
+                ref_chr4.append(frth)
+                ref_chr4bal.append(' ')
+                
+       
+            stck_code.append(str(x))
+            prnt.append('p')
+            affected_genes.append(stcknum_genesymb_lib[x])
+            
+            
+            sorted_raw = ''
+            sorted_raw_lst = []
+            sorted_raw2 = ''
+            sp_sorted_raw = []
+            
+           
+            
+
+        except:
+                
+            reformatted_genotypes[x] = 'NOT ReFORMATTED!!! Original BDSC genotype:  ' + sorted_raw
+            
+            stck_code.append(str(x))
+            
+            affected_genes.append(stcknum_genesymb_lib[x])
+            
+            ref_chr1.append('NOT REFORMATTED ')
+            ref_chr1bal.append(' ')
+            ref_chr2.append(' ')
+            ref_chr2bal.append(' ')
+            ref_chr3.append(' ')
+            ref_chr3bal.append(' ')
+            ref_chr4.append(' ')
+            ref_chr4bal.append(' ')
+            
+            prnt.append('p')
+            
+            sorted_raw = ''
+            sorted_raw_lst = []
+            sorted_raw2 = ''
+            sp_sorted_raw = []
+  
+  
+    # Making the comuns in the all_data file:
+    
+    all_data['Print'] = prnt[:-1]
+    all_data['Bloom'] = stck_code[:-1]
+    all_data['Chr 1'] = ref_chr1[:-1]
+    all_data['Chr 1 Balancer'] = ref_chr1bal[:-1]
+    all_data['Chr 2'] = ref_chr2[:-1]
+    all_data['Chr 2 Balancer'] = ref_chr2bal[:-1]
+    all_data['Chr 3'] = ref_chr3[:-1]
+    all_data['Chr 3 Balancer'] = ref_chr3bal[:-1]
+    all_data['Chr 4'] = ref_chr4[:-1]
+    all_data['Chr 4 Balancer'] = ref_chr4bal[:-1]
+    all_data['Affected Genes'] = affected_genes[:-1]
+    all_data['Comments'] = comments[:-1]   
+    
+    
+    export = pd.DataFrame(all_data, columns = ['Print', 'Bloom', 'Chr 1', 'Chr 1 Balancer', 'Chr 2', 'Chr 2 Balancer', 'Chr 3', 'Chr 3 Balancer', 'Chr 4', 'Chr 4 Balancer', 'Affected Genes', 'Comments'])
+    export.to_excel (r'//Users/jamshidasadzadeh/Desktop/Python/bloomington_stocks/export_dataframe.xlsx', index = False, header=True)
